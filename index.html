@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Descarga Masiva de Imágenes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4caf50">
+  <meta property="og:title" content="Descarga Masiva de Imágenes">
+  <meta property="og:description" content="Visualiza y descarga imágenes en lote como app web.">
+  <meta property="og:image" content="icon-512.png">
+  <meta property="og:url" content="https://tucatalogo.com/index.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icon-192.png">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 15px; }
+    h1 { text-align: center; color: #2e7d32; }
+    input, button {
+      width: 100%; max-width: 600px;
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px auto;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+    ul {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: white;
+      margin-bottom: 5px;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    a {
+      color: #1b5e20;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Descarga Masiva</h1>
+
+<input type="text" id="urlBase" placeholder="URL base (sin número)">
+<input type="number" id="totalImgs" placeholder="Cantidad de imágenes" value="10">
+<button onclick="generarEnlaces()">Generar enlaces</button>
+
+<ul id="lista"></ul>
+
+<script>
+function generarEnlaces() {
+  const base = document.getElementById('urlBase').value.trim().replace(/\/?$/, '/');
+  const total = parseInt(document.getElementById('totalImgs').value);
+  const lista = document.getElementById('lista');
+  lista.innerHTML = '';
+
+  for (let i = 1; i <= total; i++) {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    const url = `${base}${i}.webp`;
+    a.href = url;
+    a.download = `${i}.webp`;
+    a.textContent = url;
+    a.target = "_blank";
+    li.appendChild(a);
+    lista.appendChild(li);
+  }
+}
+</script>
+
+</body>
+</html>
