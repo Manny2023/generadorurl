@@ -1,20 +1,9 @@
 <!DOCTYPE html>
-
-<link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
-        .catch(err => console.error('❌ Error al registrar SW:', err));
-    });
-  }
-</script>
-
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Visualizador de Catálogos</title>
+  <link rel="manifest" href="manifest.json">
+  <title>Visualizador de Catálogos CKLASS</title>
   <style>
     body {
       font-family: sans-serif;
@@ -65,48 +54,54 @@
       border-radius: 8px;
     }
   </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
+          .catch(err => console.error('❌ Error al registrar SW:', err));
+      });
+    }
+
+    function mostrarImagenes() {
+      const url = document.getElementById('urlBase').value.trim();
+      const contenedor = document.getElementById('contenedor');
+      contenedor.innerHTML = '';
+
+      // Ejemplo: https://ejemplo.com/catalogo/50.webp
+      const match = url.match(/^(.*\/)(\d+)\.(jpg|jpeg|png|webp|gif)$/i);
+      if (!match) {
+        alert("La URL debe terminar con un número y extensión válida (ejemplo: 50.webp)");
+        return;
+      }
+
+      const base = match[1];         // https://ejemplo.com/catalogo/
+      const total = parseInt(match[2]); // 50
+      const ext = match[3];          // webp
+
+      for (let i = 1; i <= total; i++) {
+        const img = document.createElement("img");
+        img.className = "imagen";
+        img.src = `${base}${i}.${ext}`;
+        img.onerror = function() {
+          console.warn('No se pudo cargar:', this.src);
+          this.style.display = 'none';
+        };
+        contenedor.appendChild(img);
+      }
+    }
+  </script>
 </head>
 <body>
 
 <h1>Visualizador de Catálogos CKLASS</h1>
 
 <form onsubmit="event.preventDefault(); mostrarImagenes();">
-  <input type="text" id="urlBase" placeholder="Pega la URL base (termina en /)" required>
-  <input type="number" id="totalImgs" placeholder="Cantidad de imágenes" min="1" required>
+  <input type="text" id="urlBase" placeholder="Pega la URL de la última imagen (ejemplo: https://sitio.com/50.webp)" required>
   <button type="submit">Mostrar imágenes</button>
 </form>
 
 <div class="imagenes" id="contenedor"></div>
-
-<script>
-  function mostrarImagenes() {
-    const base = document.getElementById('urlBase').value.trim();
-    const total = parseInt(document.getElementById('totalImgs').value);
-    const contenedor = document.getElementById('contenedor');
-    contenedor.innerHTML = '';
-
-    if (!base.endsWith('/')) {
-      alert("La URL base debe terminar con una barra diagonal (/).");
-      return;
-    }
-
-    if (!base || isNaN(total) || total <= 0) {
-      alert("Por favor ingresa una URL válida y una cantidad mayor que 0.");
-      return;
-    }
-
-    for (let i = 1; i <= total; i++) {
-      const img = document.createElement("img");
-      img.className = "imagen";
-      img.src = `${base}${i}.webp`;
-      img.onerror = function() {
-        console.warn('No se pudo cargar:', this.src);
-        this.style.display = 'none';
-      };
-      contenedor.appendChild(img);
-    }
-  }
-</script>
 
 </body>
 </html>
