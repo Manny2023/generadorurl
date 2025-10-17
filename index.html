@@ -31,12 +31,46 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    input, button {
+    input {
       padding: 10px;
       font-size: 16px;
       margin: 10px 0;
       width: 100%;
       box-sizing: border-box;
+    }
+
+    .botones {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    button[type="submit"] {
+      background: #28a745;
+      color: white;
+    }
+
+    button[type="submit"]:hover {
+      background: #218838;
+    }
+
+    .reset {
+      background: #dc3545;
+      color: white;
+    }
+
+    .reset:hover {
+      background: #c82333;
     }
 
     .imagenes {
@@ -54,7 +88,9 @@
       border-radius: 8px;
     }
   </style>
+
   <script>
+    // Registrar Service Worker para PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')
@@ -68,16 +104,16 @@
       const contenedor = document.getElementById('contenedor');
       contenedor.innerHTML = '';
 
-      // Ejemplo: https://ejemplo.com/catalogo/50.webp
+      // Ejemplo de URL: https://ejemplo.com/catalogo/50.webp
       const match = url.match(/^(.*\/)(\d+)\.(jpg|jpeg|png|webp|gif)$/i);
       if (!match) {
         alert("La URL debe terminar con un número y extensión válida (ejemplo: 50.webp)");
         return;
       }
 
-      const base = match[1];         // https://ejemplo.com/catalogo/
-      const total = parseInt(match[2]); // 50
-      const ext = match[3];          // webp
+      const base = match[1];         // Base: https://ejemplo.com/catalogo/
+      const total = parseInt(match[2]); // Total: 50
+      const ext = match[3];          // Extensión: webp
 
       for (let i = 1; i <= total; i++) {
         const img = document.createElement("img");
@@ -90,18 +126,27 @@
         contenedor.appendChild(img);
       }
     }
+
+    function reiniciarFormulario() {
+      document.getElementById('urlBase').value = '';
+      document.getElementById('contenedor').innerHTML = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   </script>
 </head>
+
 <body>
+  <h1>Visualizador de Catálogos CKLASS</h1>
 
-<h1>Visualizador de Catálogos CKLASS</h1>
+  <form onsubmit="event.preventDefault(); mostrarImagenes();">
+    <input type="text" id="urlBase" placeholder="Pega la URL de la última imagen (ejemplo: https://sitio.com/50.webp)" required>
 
-<form onsubmit="event.preventDefault(); mostrarImagenes();">
-  <input type="text" id="urlBase" placeholder="Pega la URL de la última imagen (ejemplo: https://sitio.com/50.webp)" required>
-  <button type="submit">Mostrar imágenes</button>
-</form>
+    <div class="botones">
+      <button type="submit">Mostrar imágenes</button>
+      <button type="button" class="reset" onclick="reiniciarFormulario()">Reiniciar</button>
+    </div>
+  </form>
 
-<div class="imagenes" id="contenedor"></div>
-
+  <div class="imagenes" id="contenedor"></div>
 </body>
 </html>
